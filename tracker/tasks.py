@@ -41,6 +41,38 @@ def cold_modules(rows, busy):
     ranked = sorted(leaves, key=lambda task: (-sole[task], -direct[task], task))
     return [(leaves[task], sole[task], direct[task]) for task in ranked]
 
+def packet_suggestions(rows, busy, include_partial=False):
+    """Split claimable packets into fully open and partially completed ones.
+
+    A packet is fully open when every module is open. A partial packet has
+    at least one open module while its remaining modules already carry
+    evidence; it qualifies only when no module is assigned and neither the
+    packet nor any of its modules is claimed. Packets appear in index order
+    when fully open. Partial packets sort by depth, then by most open
+    modules first. Each entry is (first open row, open count, total count).
+    A partial packet cannot be claimed as a packet: the claim bot reserves
+    every module that already has evidence, so its open modules are claimed
+    individually instead.
+    """
+    groups = {}
+    for r in rows:
+        groups.setdefault(r['packet'], []).append(r)
+    full = []
+    partial = []
+    for name, members in groups.items():
+        if name in busy or any(r['id'] in busy for r in members):
+            continue
+        opened = [r for r in members if r['state'] == 'open']
+        if not opened:
+            continue
+        entry = (opened[0], len(opened), len(members))
+        if len(opened) == len(members):
+            full.append(entry)
+        elif include_partial and all(r['state'] != 'assigned' for r in members):
+            partial.append(entry)
+    partial.sort(key=lambda e: (e[0]['depth'], -e[1], e[0]['packet']))
+    return full, partial
+
 def open_issues():
     route = f'repos/{repo}/issues?state=open&per_page=100'
     cli = which('gh')
@@ -116,6 +148,7 @@ def main():
  p=argparse.ArgumentParser(description=__doc__);s=p.add_subparsers(dest='action',required=True)
  nx=s.add_parser('next');nx.add_argument('--limit',type=int,default=8)
  nx.add_argument('--cold',action='store_true',help='show available individual modules with no project imports')
+ nx.add_argument('--include-partial',action='store_true',help='also list partially completed packets (up to --limit more) whose open modules can be claimed individually')
  for n in ['show','claim','build']:
   sub=s.add_parser(n);sub.add_argument('target')
   if n=='build':
@@ -128,11 +161,15 @@ def main():
    for row,sole,direct in cold_modules(rows,busy)[:max(0,a.limit)]:
     print(row['id'],row['packet'],row['module'],'sole-project-import consumers',sole,'direct consumers',direct)
    return 0
-  used={r['packet'] for r in rows if r['id'] in busy or r['state']!='open'};shown=set()
-  for r in rows:
-   if r['packet'] in busy|used|shown:continue
-   print(r['packet'],'depth',r['depth'],'begins with',r['module']);shown.add(r['packet'])
-   if len(shown)>=a.limit:break
+  full,partial=packet_suggestions(rows,busy,a.include_partial)
+  for r,opened,total in full[:max(0,a.limit)]:
+   print(r['packet'],'depth',r['depth'],'begins with',r['module'],f'{opened}/{total} open')
+  shown_partial=partial[:max(0,a.limit)]
+  for r,opened,total in shown_partial:
+   print(r['packet'],'depth',r['depth'],'begins with',r['module'],f'{opened}/{total} open','(partial)')
+  if shown_partial:
+   print('Partial packets already have evidence for some modules and cannot be claimed as a packet.')
+   print('Claim their open modules individually: show <packet> lists them, then claim <module ID>.')
   return 0
  sel=select(rows,a.target)
  if a.action=='show':

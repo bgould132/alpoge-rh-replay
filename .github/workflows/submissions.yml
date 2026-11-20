@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['evidence/volunteers/**', 'tracker/submissions.py', '.github/workflows/submissions.yml']
+    paths: ['evidence/volunteers/**', 'tracker/submissions.py', 'tracker/claim_comments.py', 'tracker/activity.py', '.github/workflows/submissions.yml']
 permissions:
   contents: write
   issues: read
@@ -37,8 +37,9 @@ jobs:
             git fetch origin main
             git checkout --detach FETCH_HEAD
             python3 tracker/submissions.py
-            if git diff --quiet -- README.md; then exit 0; fi
-            git add README.md
+            python3 tracker/activity.py
+            git add README.md tracker/activity.tsv tracker/activity.svg
+            if git diff --cached --quiet; then exit 0; fi
             git commit -m 'Update replay contributor credits'
             if git push origin HEAD:main; then exit 0; fi
           done
