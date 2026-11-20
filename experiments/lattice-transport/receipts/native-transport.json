@@ -1,0 +1,88 @@
+{
+  "release": "Lean (version 4.33.1, x86_64-unknown-linux-gnu, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "source_revision": "9084fa67686df0e4bd9fbabb38dfb1c6bec8e34b",
+  "source_sha256": "63c95ff77bc163c24e19ba5d8e29d53e9cea97c2662da92b158ee08fb526e8d1",
+  "patch_sha256": "f06f001e05dfd153b0f6c93a0b5d80b3cc78d42d0c5b5b6b3352163cb6818094",
+  "metadata_pass": true,
+  "rfl_checks_passed": [
+    "pb",
+    "relIdx_pb",
+    "opU_pb",
+    "herm_pb",
+    "semi_pb",
+    "fixed_pb",
+    "selfDual_pb",
+    "reps_pb",
+    "inter_pb",
+    "th_pb",
+    "not_dvd_relIdx"
+  ],
+  "axioms": {
+    "relIdx_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "opU_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "herm_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "semi_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "fixed_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selfDual_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "reps_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "inter_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "th_pb": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "not_dvd_relIdx": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "scope": "Extracted original and changed transport sections with their actual prerequisites. No full consumer or whole-proof build.",
+  "production_file_sha256": {
+    "extracted/lean/src/Formalism/LocalToGlobal/TorsionIntegrality/QuadraticSemicharacters/IsSemiChar.lean": "533ef6d50155d57bec89ee39e59cc495b8516511df98fdb97e706caffb62e2a2",
+    "extracted/lean/src/Formalism/LocalToGlobal/TorsionIntegrality/QuadraticSemicharacters/SemiCharBasic.lean": "ed782f391328dff9cbcf218f53b5138312660150fff17b69951ccf2e4e62045a",
+    "extracted/lean/src/Formalism/LocalToGlobal/TorsionIntegrality/QuadraticSemicharacters/LineTransport.lean": "6454297f95872e2f014734d0e215076b12ecb5b85c5bf7d78b32e2914679cd5f",
+    "extracted/lean/src/Formalism/LocalToGlobal/TorsionIntegrality/QuadraticSemicharacters/CayleyGaussianIntegrals/MatrixFormFourfoldBlock.lean": "4a5187373bff003f5113c8f168b4f40c97fc78f815d4681d9201a928c5880032",
+    "extracted/lean/src/Formalism/LocalToGlobal/TorsionIntegrality/QuadraticSemicharacters/CayleyGaussianIntegrals/LocalComponentGL.lean": "017aee752d3de2175b69a999a57306ea676c0ec0c097b99071ca5d951080471b",
+    "extracted/lean/src/Formalism/LocalToGlobal/KernelLattices/KernelLocalFactors/SelfDualLatticeNorms/LocNormAmbOfOf.lean": "f7a8193b22a71be1180ef99d4672969e0ce4ebc1fbcee2c99194f8413d27d067",
+    "extracted/lean/src/Formalism/LocalToGlobal/KernelLattices/KernelLocalFactors/RkVolChain.lean": "b60413e36a19a517a96e3ba5025c217a316987a83807c6b71ea6c24ca47fc0c4"
+  },
+  "source_receipt_sha256": "e48f95658821068112f08a73a873e610d770cba223083fcb00495471ddf73ca5",
+  "compilation_exit_code": 0,
+  "proof_branch_commit": "04955a14dd0c54d010fb25e2622b70fb5dc6d7cb",
+  "pristine_archive_inputs_match": true
+}

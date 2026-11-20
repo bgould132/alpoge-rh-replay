@@ -1,0 +1,69 @@
+{
+  "status": "pass",
+  "started_utc": "2026-11-20T17:07:29.968494+00:00",
+  "finished_utc": "2026-11-20T17:09:08.299621+00:00",
+  "upstream_revision": "a6ac91a412dcbaab31801355ec5707024a71bf65",
+  "candidate_revision": "9084fa67686df0e4bd9fbabb38dfb1c6bec8e34b",
+  "public_artifacts_revision": "74f30cbcb76e56412df035abc2b568fd827c2875",
+  "mathlib_pin": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "native_lean": "Lean (version 4.33.1, x86_64-unknown-linux-gnu, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "wrapper": "Unmodified published wrapper executed with --sources-only. Native compilation, if requested, uses equivalent lean arguments directly, with a consolidated pinned Mathlib object directory in LEAN_PATH. The elan/Lake branch of the wrapper is not exercised.",
+  "scope": "The renamed published selector, the canonical replacement selector and their published module audit. No release-wide Main build.",
+  "audit": {
+    "rfl_checks_compiled": 23,
+    "metadata": "Matched public binder names, visibility and universes for 23 declarations",
+    "axioms": "'UpperTheory.Reformulated.B.SelectionLemmas.main' depends on axioms: [propext, Classical.choice, Quot.sound]"
+  },
+  "inputs": {
+    "original": {
+      "bytes": 252719,
+      "sha256": "403c7963e5064fe2d3bc0cbcd26d67dbd394c8c66f5e74298842d4f4b955b27b"
+    },
+    "candidate": {
+      "bytes": 20117,
+      "sha256": "a7c72bc94dea49203d583f842fdfb27590d1d775b9550239faf5a1ed63453077"
+    },
+    "published_renamed": {
+      "bytes": 251030,
+      "sha256": "2df4509e290e01ff23bdd86be9d4adc86859573021155031b1ae8bb2536dd9d2"
+    },
+    "audit_source": {
+      "bytes": 5645,
+      "sha256": "21254bdf1536a4c5b11d7e24564c45473673a9259f7efda300c4b3bb43d54d24"
+    }
+  },
+  "steps": [
+    {
+      "label": "public-wrapper-sources-only",
+      "exit_code": 0,
+      "wall_seconds": 0.1248
+    },
+    {
+      "label": "apply-published-selector",
+      "exit_code": 0,
+      "wall_seconds": 0.0279
+    },
+    {
+      "label": "lean-version",
+      "exit_code": 0,
+      "wall_seconds": 0.2713
+    },
+    {
+      "label": "published",
+      "exit_code": 0,
+      "wall_seconds": 53.9804
+    },
+    {
+      "label": "candidate",
+      "exit_code": 0,
+      "wall_seconds": 21.8711
+    },
+    {
+      "label": "audit",
+      "exit_code": 0,
+      "wall_seconds": 21.7693
+    }
+  ],
+  "platform": "Linux x86_64 (WSL2)",
+  "source_receipt_sha256": "7da838c9a27cb941a99646df0b3ab9330a62f2cebf413315b840423e57c0182d"
+}

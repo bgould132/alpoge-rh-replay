@@ -1,0 +1,62 @@
+{
+  "release": "Lean (version 4.33.1, x86_64-unknown-linux-gnu, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "flags": [
+    "-j1",
+    "-DElab.async=false",
+    "--tstack=400000",
+    "-DautoImplicit=false",
+    "-DrelaxedAutoImplicit=false",
+    "-DmaxSynthPendingDepth=3",
+    "-DmaxHeartbeats=4000000"
+  ],
+  "source_revision": "9084fa67686df0e4bd9fbabb38dfb1c6bec8e34b",
+  "file_sha256": "b5717037f681b3d52f8a68699fb9e0234eaff03063c018461e0121730755b28b",
+  "input_sha256": "63c95ff77bc163c24e19ba5d8e29d53e9cea97c2662da92b158ee08fb526e8d1",
+  "per_declaration": {
+    "shared": {
+      "relIdx_pb": 441,
+      "opU_pb": 767,
+      "herm_pb": 396,
+      "semi_pb": 1249,
+      "fixed_pb": 515,
+      "selfDual_pb": 859,
+      "reps_pb": 1692,
+      "inter_pb": 1041,
+      "th_pb": 3116,
+      "not_dvd_relIdx": 792
+    },
+    "original": {
+      "relIdx_pb": 433,
+      "opU_pb": 760,
+      "herm_pb": 390,
+      "semi_pb": 1232,
+      "fixed_pb": 485,
+      "selfDual_pb": 999,
+      "reps_pb": 1660,
+      "inter_pb": 995,
+      "th_pb": 3101,
+      "not_dvd_relIdx": 767
+    },
+    "revised": {
+      "relIdx_pb": 286,
+      "opU_pb": 331,
+      "herm_pb": 327,
+      "semi_pb": 408,
+      "fixed_pb": 454,
+      "selfDual_pb": 372,
+      "reps_pb": 492,
+      "inter_pb": 510,
+      "th_pb": 816,
+      "not_dvd_relIdx": 113
+    }
+  },
+  "group_totals": {
+    "shared": 10868,
+    "original": 10822,
+    "revised": 4109
+  },
+  "original_with_shared": 21690,
+  "revised_with_shared": 14977,
+  "reduction_percent_with_shared": 30.95,
+  "scope": "Only the ten common, ten original and ten forwarding theorem declarations are counted. The import is present in both module versions. Data definitions, other declarations and file load costs are excluded."
+}

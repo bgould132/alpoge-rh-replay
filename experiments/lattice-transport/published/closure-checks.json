@@ -1,0 +1,109 @@
+{
+  "revision": "a6ac91a412dcbaab31801355ec5707024a71bf65",
+  "import_patch_sha256": "02dcab40300f9327a4776f3016b22de2cbf9fc5b957dc682d921a0480a8c1bb7",
+  "sources_read": 1646,
+  "peak_process_rss_kib": 66436,
+  "order": "postorder, first visit, depth-first, inputs in the order written; original and candidate compared element-for-element",
+  "external": "External import names are terminals; no Mathlib implementation or dependency objects were loaded.",
+  "roots": {
+    "Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkVolChain": {
+      "project": {
+        "entries": 1629,
+        "sha256_before": "be3c58695314fc48c95ce7b7f16dc7ef0ecdb8394fa88356ae6b4025372c4de6",
+        "sha256_after": "be3c58695314fc48c95ce7b7f16dc7ef0ecdb8394fa88356ae6b4025372c4de6",
+        "list_utf8_lf_gzip": "RkVolChain-project-order.txt.gz"
+      },
+      "with_external_import_names": {
+        "entries": 1646,
+        "sha256_before": "e6959251b3263a43753c5635bc4d33dcd4d673cc2d4e62932816417b24eb747e",
+        "sha256_after": "e6959251b3263a43753c5635bc4d33dcd4d673cc2d4e62932816417b24eb747e",
+        "list_utf8_lf_gzip": "RkVolChain-order.txt.gz"
+      },
+      "external": [
+        "Mathlib",
+        "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+        "Mathlib.Algebra.Order.Field.Basic",
+        "Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality",
+        "Mathlib.Analysis.InnerProductSpace.Positive",
+        "Mathlib.Analysis.Matrix.Order",
+        "Mathlib.Analysis.Matrix.PosDef",
+        "Mathlib.Data.Finset.Lattice.Fold",
+        "Mathlib.Data.Fintype.BigOperators",
+        "Mathlib.Data.Real.Basic",
+        "Mathlib.LinearAlgebra.PiTensorProduct.Basis",
+        "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "Mathlib.RingTheory.Localization.Module",
+        "Mathlib.Tactic.FieldSimp",
+        "Mathlib.Tactic.Linarith",
+        "Mathlib.Tactic.NormNum",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    "Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkVolLat": {
+      "project": {
+        "entries": 1641,
+        "sha256_before": "e8222b4bf9dfe2d7de97a09f0ec2387867563b40ef0d3a29d41347afb76a91d2",
+        "sha256_after": "e8222b4bf9dfe2d7de97a09f0ec2387867563b40ef0d3a29d41347afb76a91d2",
+        "list_utf8_lf_gzip": "RkVolLat-project-order.txt.gz"
+      },
+      "with_external_import_names": {
+        "entries": 1658,
+        "sha256_before": "e1c64a1eaadb6809099906f67875e1f95b8ec685a38618fe75f546f48bc945ef",
+        "sha256_after": "e1c64a1eaadb6809099906f67875e1f95b8ec685a38618fe75f546f48bc945ef",
+        "list_utf8_lf_gzip": "RkVolLat-order.txt.gz"
+      },
+      "external": [
+        "Mathlib",
+        "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+        "Mathlib.Algebra.Order.Field.Basic",
+        "Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality",
+        "Mathlib.Analysis.InnerProductSpace.Positive",
+        "Mathlib.Analysis.Matrix.Order",
+        "Mathlib.Analysis.Matrix.PosDef",
+        "Mathlib.Data.Finset.Lattice.Fold",
+        "Mathlib.Data.Fintype.BigOperators",
+        "Mathlib.Data.Real.Basic",
+        "Mathlib.LinearAlgebra.PiTensorProduct.Basis",
+        "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "Mathlib.RingTheory.Localization.Module",
+        "Mathlib.Tactic.FieldSimp",
+        "Mathlib.Tactic.Linarith",
+        "Mathlib.Tactic.NormNum",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    "Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RkVolSeam": {
+      "project": {
+        "entries": 1630,
+        "sha256_before": "16840340b703f9705435b5ec55005caaa4de1decf1656f41517bcbba6203a6a2",
+        "sha256_after": "16840340b703f9705435b5ec55005caaa4de1decf1656f41517bcbba6203a6a2",
+        "list_utf8_lf_gzip": "RkVolSeam-project-order.txt.gz"
+      },
+      "with_external_import_names": {
+        "entries": 1647,
+        "sha256_before": "b3fbadbc93022a23a86f5ee9d45e44b92e5856c69465ee68926594f9d3694124",
+        "sha256_after": "b3fbadbc93022a23a86f5ee9d45e44b92e5856c69465ee68926594f9d3694124",
+        "list_utf8_lf_gzip": "RkVolSeam-order.txt.gz"
+      },
+      "external": [
+        "Mathlib",
+        "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+        "Mathlib.Algebra.Order.Field.Basic",
+        "Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality",
+        "Mathlib.Analysis.InnerProductSpace.Positive",
+        "Mathlib.Analysis.Matrix.Order",
+        "Mathlib.Analysis.Matrix.PosDef",
+        "Mathlib.Data.Finset.Lattice.Fold",
+        "Mathlib.Data.Fintype.BigOperators",
+        "Mathlib.Data.Real.Basic",
+        "Mathlib.LinearAlgebra.PiTensorProduct.Basis",
+        "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "Mathlib.RingTheory.Localization.Module",
+        "Mathlib.Tactic.FieldSimp",
+        "Mathlib.Tactic.Linarith",
+        "Mathlib.Tactic.NormNum",
+        "Mathlib.Tactic.Ring"
+      ]
+    }
+  }
+}

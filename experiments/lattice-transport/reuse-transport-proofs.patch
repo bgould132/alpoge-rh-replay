@@ -1,0 +1,146 @@
+--- a/extracted/lean/src/Formalism/LocalToGlobal/KernelLattices/KernelLocalFactors/RkVolChain.lean
++++ b/extracted/lean/src/Formalism/LocalToGlobal/KernelLattices/KernelLocalFactors/RkVolChain.lean
+@@ -81,91 +81,39 @@
+ 
+ abbrev pb (Λ : AddSubgroup W) : AddSubgroup V := Λ.comap e.toLinearMap.toAddMonoidHom
+ 
+-theorem relIdx_pb (Λ₁ Λ₂ : AddSubgroup W) : relIdx (pb e Λ₁) (pb e Λ₂) = relIdx Λ₁ Λ₂ := by
+-  unfold relIdx
+-  rw [AddSubgroup.relIndex_comap, AddSubgroup.map_comap_eq_self_of_surjective]
+-  exact e.surjective
++theorem relIdx_pb (Λ₁ Λ₂ : AddSubgroup W) : relIdx (pb e Λ₁) (pb e Λ₂) = relIdx Λ₁ Λ₂ :=
++  Formalism.L2.Ker.KS.relIdx_pb e Λ₁ Λ₂
+ 
+ variable (H : Sesq V) (H' : Sesq W) (hH : ∀ x y, H x y = H' (e x) (e y))
+ 
+ include hH
+ 
+-theorem opU_pb (x z : V) (F : W → ℂ) : opU H x (fun v => F (e v)) z = opU H' (e x) F (e z) := by
+-  simp only [opU, map_add, hH]
+-
+-theorem herm_pb (h : IsHerm H') : IsHerm H := fun x y => by rw [hH, hH]; exact h _ _
++theorem opU_pb (x z : V) (F : W → ℂ) : opU H x (fun v => F (e v)) z = opU H' (e x) F (e z) :=
++  Formalism.L2.Ker.KS.opU_pb e H H' hH x z F
++
++theorem herm_pb (h : IsHerm H') : IsHerm H :=
++  Formalism.L2.Ker.KS.herm_pb e H H' hH h
+ 
+ theorem semi_pb {Λ : AddSubgroup W} {α : V → ℂ} {α' : W → ℂ} (hα : ∀ x, e x ∈ Λ → α x = α' (e x))
+-    (h : IsSemiChar H' Λ α') : IsSemiChar H (pb e Λ) α := by
+-  refine ⟨fun x hx => by rw [hα x hx]; exact h.1 _ hx, fun x hx y hy => ?_⟩
+-  have hx' : e x ∈ Λ := hx
+-  have hy' : e y ∈ Λ := hy
+-  have hxy : e (x + y) ∈ Λ := by rw [map_add]; exact Λ.add_mem hx' hy'
+-  rw [hα _ hxy, hα x hx', hα y hy', map_add, h.2 _ hx' _ hy']
+-  simp only [altE, hH]
++    (h : IsSemiChar H' Λ α') : IsSemiChar H (pb e Λ) α :=
++  Formalism.L2.Ker.KS.semi_pb e H H' hH hα h
+ 
+ theorem fixed_pb {Λ : AddSubgroup W} {α : V → ℂ} {α' : W → ℂ} (hα : ∀ x, e x ∈ Λ → α x = α' (e x)) {F : W → ℂ}
+-    (h : F ∈ fixedBy H' α' Λ) : (fun v => F (e v)) ∈ fixedBy H α (pb e Λ) := by
+-  intro x hx z
+-  have hx' : e x ∈ Λ := hx
+-  rw [opU_pb e H H' hH, hα x hx']
+-  exact h _ hx' _
+-
+-theorem selfDual_pb {Λ : AddSubgroup W} (h : IsSelfDual H' Λ) : IsSelfDual H (pb e Λ) := by
+-  unfold IsSelfDual at h ⊢
+-  ext x
+-  constructor
+-  · intro hx
+-    show e x ∈ Λ
+-    rw [← h]
+-    intro y' hy'
+-    obtain ⟨m, hm⟩ := hx (e.symm y') (show e (e.symm y') ∈ Λ by simpa using hy')
+-    refine ⟨m, ?_⟩
+-    simpa [altE, hH] using hm
+-  · intro hx
+-    have hx' : e x ∈ dualLat H' Λ := by
+-      rw [h]
+-      exact hx
+-    intro y hy
+-    obtain ⟨m, hm⟩ := hx' (e y) hy
+-    refine ⟨m, ?_⟩
+-    simpa [altE, hH] using hm
++    (h : F ∈ fixedBy H' α' Λ) : (fun v => F (e v)) ∈ fixedBy H α (pb e Λ) :=
++  Formalism.L2.Ker.KS.fixed_pb e H H' hH hα h
++
++theorem selfDual_pb {Λ : AddSubgroup W} (h : IsSelfDual H' Λ) : IsSelfDual H (pb e Λ) :=
++  Formalism.L2.Ker.KS.selfDual_pb e H H' hH h
+ 
+ theorem reps_pb {Λ₁ Λ₂ : AddSubgroup W} {S : Finset W} (hS : IsReps Λ₁ Λ₂ S) :
+-    IsReps (pb e Λ₁) (pb e Λ₂) (S.map e.symm.toEquiv.toEmbedding) := by
+-  refine ⟨?_, ?_, ?_⟩
+-  · intro x hx
+-    obtain ⟨y, hy, rfl⟩ := Finset.mem_map.1 hx
+-    show e (e.symm y) ∈ Λ₂
+-    rw [e.apply_symm_apply]
+-    exact hS.1 y hy
+-  · intro x hx y hy hxy
+-    obtain ⟨x', hx', rfl⟩ := Finset.mem_map.1 hx
+-    obtain ⟨y', hy', rfl⟩ := Finset.mem_map.1 hy
+-    have : e (e.symm x' - e.symm y') ∈ Λ₁ := hxy
+-    rw [map_sub, e.apply_symm_apply, e.apply_symm_apply] at this
+-    rw [hS.2.1 x' hx' y' hy' this]
+-  · intro y hy
+-    obtain ⟨x, hx, hxy⟩ := hS.2.2 (e y) hy
+-    refine ⟨e.symm x, Finset.mem_map.2 ⟨x, hx, rfl⟩, ?_⟩
+-    show e (y - e.symm x) ∈ Λ₁
+-    rwa [map_sub, e.apply_symm_apply]
++    IsReps (pb e Λ₁) (pb e Λ₂) (S.map e.symm.toEquiv.toEmbedding) :=
++  Formalism.L2.Ker.KS.reps_pb e H H' hH hS
+ 
+ theorem inter_pb (hH' : IsHerm H') (Λ₁ Λ₂ : AddSubgroup W) (α : V → ℂ) (α' : W → ℂ)
+     (hα₁ : ∀ x, e x ∈ Λ₁ → α x = α' (e x)) (hα₂ : ∀ x, e x ∈ Λ₂ → α x = α' (e x))
+     (hS : IsSemiChar H' Λ₂ α') (hidx : relIdx Λ₁ Λ₂ ≠ 0) (F : W → ℂ) (hF : F ∈ fixedBy H' α' Λ₁) :
+-    inter H α (pb e Λ₁) (pb e Λ₂) (fun v => F (e v)) = fun z => inter H' α' Λ₁ Λ₂ F (e z) := by
+-  funext z
+-  obtain ⟨⟨S, hSr⟩, -⟩ := cosetRepsExist W Λ₁ Λ₂ hidx
+-  rw [InterReps_of semicharacterHom W H' hH' Λ₁ Λ₂ α' hS F hF S hSr (e z),
+-    InterReps_of semicharacterHom V H (herm_pb e H H' hH hH') _ _ α (semi_pb e H H' hH hα₂ hS) _
+-      (fixed_pb e H H' hH hα₁ hF) _ (reps_pb e H H' hH hSr) z, relIdx_pb]
+-  congr 1
+-  simp only [sumU, Finset.sum_map]
+-  refine Finset.sum_congr rfl fun x hx => ?_
+-  have hx2 : e (e.symm x) ∈ Λ₂ := by rw [e.apply_symm_apply]; exact hSr.1 x hx
+-  show α (e.symm x) * opU H (e.symm x) (fun v => F (e v)) z = _
+-  rw [opU_pb e H H' hH, hα₂ _ hx2, e.apply_symm_apply]
++    inter H α (pb e Λ₁) (pb e Λ₂) (fun v => F (e v)) = fun z => inter H' α' Λ₁ Λ₂ F (e z) :=
++  Formalism.L2.Ker.KS.inter_pb e H H' hH hH' Λ₁ Λ₂ α α' hα₁ hα₂ hS hidx F hF
+ 
+ end Gen
+ 
+@@ -176,29 +124,14 @@
+ 
+ include hH in
+ theorem th_pb {Λ : AddSubgroup W} {α : V → ℂ} {α' : W → ℂ} (hα : ∀ x, e x ∈ Λ → α x = α' (e x)) {F : W → ℂ}
+-    (h : F ∈ Th H' α' Λ) : (fun v => F (e v)) ∈ Th H α (pb e Λ) := by
+-  refine ⟨?_, fixed_pb e H H' hH hα h.2⟩
+-  have h1 : AnalyticOnNhd ℂ (LinearMap.toContinuousLinearMap e.toLinearMap) Set.univ :=
+-    (LinearMap.toContinuousLinearMap e.toLinearMap).analyticOnNhd _
+-  exact h.1.comp h1 (fun _ _ => Set.mem_univ _)
++    (h : F ∈ Th H' α' Λ) : (fun v => F (e v)) ∈ Th H α (pb e Λ) :=
++  Formalism.L2.Ker.KS.th_pb e H H' hH hα h
+ 
+ end GenTh
+ 
+ theorem not_dvd_relIdx {V : Type*} [AddCommGroup V] (Λ₁ Λ₂ : AddSubgroup V) (p s : ℕ) [Fact p.Prime] (hs : Nat.Coprime s p)
+-    (h0 : relIdx Λ₁ Λ₂ ≠ 0) (hk : ∀ x ∈ Λ₂, s • x ∈ Λ₁) : ¬ p ∣ relIdx Λ₁ Λ₂ := by
+-  intro hd
+-  have h0' : Nat.card (Λ₂ ⧸ Λ₁.addSubgroupOf Λ₂) ≠ 0 := h0
+-  have hd' : p ∣ Nat.card (Λ₂ ⧸ Λ₁.addSubgroupOf Λ₂) := hd
+-  have : Finite (Λ₂ ⧸ Λ₁.addSubgroupOf Λ₂) := Nat.finite_of_card_ne_zero h0'
+-  obtain ⟨q, hq⟩ := exists_prime_addOrderOf_dvd_card' p hd'
+-  have hsq : s • q = 0 := by
+-    induction q using QuotientAddGroup.induction_on with | H a => ?_
+-    rw [← QuotientAddGroup.mk_nsmul, QuotientAddGroup.eq_zero_iff, AddSubgroup.mem_addSubgroupOf, AddSubgroup.coe_nsmul]
+-    exact hk _ a.2
+-  have h1 : p ∣ s := hq ▸ addOrderOf_dvd_of_nsmul_eq_zero hsq
+-  have h2 : p ∣ Nat.gcd s p := Nat.dvd_gcd h1 dvd_rfl
+-  rw [hs] at h2
+-  exact (Fact.out : p.Prime).one_lt.ne' (Nat.dvd_one.1 h2)
++    (h0 : relIdx Λ₁ Λ₂ ≠ 0) (hk : ∀ x ∈ Λ₂, s • x ∈ Λ₁) : ¬ p ∣ relIdx Λ₁ Λ₂ :=
++  Formalism.L2.Ker.KS.not_dvd_relIdx Λ₁ Λ₂ p s hs h0 hk
+ 
+ section LaS
+ 
