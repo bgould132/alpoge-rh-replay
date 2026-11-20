@@ -1,0 +1,91 @@
+{
+  "archive_sha256": "c0924a1458a958d8d04209816f5d68f0b730046a154b18521787b6a141298ee4",
+  "test_data": "P0012, every fourth target in reviewed command",
+  "ids": [
+    "M028660",
+    "M028860",
+    "M029002",
+    "M029155",
+    "M029330",
+    "M029493",
+    "M029564",
+    "M030268",
+    "M030463",
+    "M030616",
+    "M030666",
+    "M030834",
+    "M030911",
+    "M031075",
+    "M031183",
+    "M031220"
+  ],
+  "member_count": 128,
+  "input_bytes": 105005650,
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "results": [
+    {
+      "variant": "warm-default",
+      "flags": [
+        "--bundle"
+      ],
+      "elapsed_seconds": 3.3529,
+      "digest_readback_seconds": 0.0169,
+      "bytes": 5213130
+    },
+    {
+      "variant": "1-baseline",
+      "flags": [
+        "--bundle"
+      ],
+      "elapsed_seconds": 3.3694,
+      "digest_readback_seconds": 0.0171,
+      "bytes": 5213130
+    },
+    {
+      "variant": "2-fast",
+      "flags": [
+        "--fast-bundle"
+      ],
+      "elapsed_seconds": 1.9512,
+      "digest_readback_seconds": 0.0182,
+      "bytes": 5968410
+    },
+    {
+      "variant": "3-fast",
+      "flags": [
+        "--fast-bundle"
+      ],
+      "elapsed_seconds": 1.9073,
+      "digest_readback_seconds": 0.0218,
+      "bytes": 5968410
+    },
+    {
+      "variant": "4-baseline",
+      "flags": [
+        "--bundle"
+      ],
+      "elapsed_seconds": 3.5325,
+      "digest_readback_seconds": 0.0177,
+      "bytes": 5213130
+    },
+    {
+      "variant": "5-fast",
+      "flags": [
+        "--fast-bundle"
+      ],
+      "elapsed_seconds": 1.9511,
+      "digest_readback_seconds": 0.0185,
+      "bytes": 5968410
+    },
+    {
+      "variant": "6-baseline",
+      "flags": [
+        "--bundle"
+      ],
+      "elapsed_seconds": 3.498,
+      "digest_readback_seconds": 0.0177,
+      "bytes": 5213130
+    }
+  ],
+  "limits": "One sequential WSL2 worker on an NTFS volume, warm files, no network in timed section. Actual tasks.py argument parsing, validation, object hashing, tar creation and final digest. Compiler/git identity probes and Lake were mocked. No worker receipt is being submitted."
+}

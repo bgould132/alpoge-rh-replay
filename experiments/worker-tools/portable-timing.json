@@ -1,0 +1,92 @@
+{
+  "tracker_base": "9e5923b56645414c5e6df70bfc788751028fe1ee",
+  "candidate_tracker_sha256": "c13da57ad02eb5a088886f7c191c347c4d1635bf80288f9b5b43f0e603591c1d",
+  "archive_sha256": "c0924a1458a958d8d04209816f5d68f0b730046a154b18521787b6a141298ee4",
+  "receipt_sha256": "a5bed4f359cb435a322fb79edb47753916473088ca91bc6e6f87f561aede3b50",
+  "ids": [
+    "M028660",
+    "M028860",
+    "M029002",
+    "M029155",
+    "M029330",
+    "M029493",
+    "M029564",
+    "M030268",
+    "M030463",
+    "M030616",
+    "M030666",
+    "M030834",
+    "M030911",
+    "M031075",
+    "M031183",
+    "M031220"
+  ],
+  "member_count": 128,
+  "input_bytes": 105005650,
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "results": [
+    {
+      "variant": "warm-default",
+      "flags": [
+        "--bundle"
+      ],
+      "elapsed_seconds": 3.4188,
+      "digest_readback_seconds": 0.0178,
+      "bytes": 5213130
+    },
+    {
+      "variant": "1-baseline",
+      "flags": [
+        "--bundle"
+      ],
+      "elapsed_seconds": 3.4968,
+      "digest_readback_seconds": 0.0287,
+      "bytes": 5213130
+    },
+    {
+      "variant": "2-fast",
+      "flags": [
+        "--fast-bundle"
+      ],
+      "elapsed_seconds": 1.9343,
+      "digest_readback_seconds": 0.019,
+      "bytes": 5968410
+    },
+    {
+      "variant": "3-fast",
+      "flags": [
+        "--fast-bundle"
+      ],
+      "elapsed_seconds": 1.9195,
+      "digest_readback_seconds": 0.0199,
+      "bytes": 5968410
+    },
+    {
+      "variant": "4-baseline",
+      "flags": [
+        "--bundle"
+      ],
+      "elapsed_seconds": 3.4426,
+      "digest_readback_seconds": 0.0174,
+      "bytes": 5213130
+    },
+    {
+      "variant": "5-fast",
+      "flags": [
+        "--fast-bundle"
+      ],
+      "elapsed_seconds": 1.9288,
+      "digest_readback_seconds": 0.0198,
+      "bytes": 5968410
+    },
+    {
+      "variant": "6-baseline",
+      "flags": [
+        "--bundle"
+      ],
+      "elapsed_seconds": 3.4137,
+      "digest_readback_seconds": 0.0192,
+      "bytes": 5213130
+    }
+  ]
+}

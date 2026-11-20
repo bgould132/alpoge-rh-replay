@@ -1,0 +1,79 @@
+{
+  "tracker_repository": "https://github.com/rohanarun/alpoge-rh-replay",
+  "tracker_base": "9096bbcd23e2248d05d5a3f927e8745a744dc59a",
+  "snapshot_time_utc": "2026-11-20T16:54:40.518692+00:00",
+  "input_sha256": {
+    "tracker/modules.jsonl.gz": "c4e2032331f0da7fafe9dc6046ca9430e899041f77c1985167c92f5b0ee7ea74",
+    "tracker/completed.tsv": "a1d1056181c3e9ec032120ac65f0322ba8a2470a971b405e10815fedd004723e"
+  },
+  "data_origins": {
+    "index_and_ledger": "https://github.com/rohanarun/alpoge-rh-replay/tree/9096bbcd23e2248d05d5a3f927e8745a744dc59a/tracker",
+    "live_claim_source": "https://api.github.com/repos/rohanarun/alpoge-rh-replay/issues?state=open&per_page=100",
+    "selection": "Applied tracker/tasks.py load and claims from the pinned revision. Open claim issue titles were captured at the recorded UTC time. This combines a versioned ledger and a frozen request queue."
+  },
+  "claims": [
+    "M016897",
+    "M048503",
+    "P0103",
+    "P0104",
+    "P0108",
+    "P0111",
+    "P0145"
+  ],
+  "claim_issues": {
+    "M016897": "https://github.com/rohanarun/alpoge-rh-replay/issues/10",
+    "M048503": "https://github.com/rohanarun/alpoge-rh-replay/issues/4",
+    "P0103": "https://github.com/rohanarun/alpoge-rh-replay/issues/11",
+    "P0104": "https://github.com/rohanarun/alpoge-rh-replay/issues/12",
+    "P0108": "https://github.com/rohanarun/alpoge-rh-replay/issues/14",
+    "P0111": "https://github.com/rohanarun/alpoge-rh-replay/issues/15",
+    "P0145": "https://github.com/rohanarun/alpoge-rh-replay/issues/16"
+  },
+  "counts": {
+    "all_index_rows": 175187,
+    "cold_modules": 4639,
+    "packets_with_cold_modules": 87,
+    "wholly_available_depth_zero_packets": 1,
+    "additional_cold_modules_in_partial_packets": 4575,
+    "partial_packets": 86
+  },
+  "top_five": [
+    {
+      "id": "M002998",
+      "packet": "P0002",
+      "module": "Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair",
+      "sole": 48,
+      "direct": 209
+    },
+    {
+      "id": "M103506",
+      "packet": "P0044",
+      "module": "Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.FerreroWashingtonIndex.TwSingle",
+      "sole": 22,
+      "direct": 37
+    },
+    {
+      "id": "M000757",
+      "packet": "P0001",
+      "module": "CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData",
+      "sole": 20,
+      "direct": 93
+    },
+    {
+      "id": "M171103",
+      "packet": "P0089",
+      "module": "PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.ComplexMinusRealLineMeasureCoordinates",
+      "sole": 20,
+      "direct": 23
+    },
+    {
+      "id": "M103332",
+      "packet": "P0044",
+      "module": "Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.MapGenBChar",
+      "sole": 19,
+      "direct": 39
+    }
+  ],
+  "method": "Consider open rows after ledger overrides, excluding claims on a module or its packet. A cold module has no project imports. Rank by number of available consumers having that module as their only project import, then the number of all its available direct consumers, then the module ID. Counts are graph properties, not observed build times.",
+  "offline_replay": "From this evidence directory run python3 reproduce_queue.py /path/to/local/tracker-repo with the tracker commit available locally. The script verifies Git blob SHA-256 digests, all six counts and the five highest-ranked IDs and scores without consulting the current queue."
+}
