@@ -1,0 +1,112 @@
+{
+  "order": "ABBA, one Lean process per run, followed by a separate axiom audit after each compilation; A = published body with same five imports, B = exact candidate",
+  "candidate": "9084fa67686df0e4bd9fbabb38dfb1c6bec8e34b",
+  "published": "a6ac91a412dcbaab31801355ec5707024a71bf65",
+  "times": {
+    "paired-A1": 9.53,
+    "paired-B1": 8.48,
+    "paired-B2": 7.95,
+    "paired-A2": 10.17
+  },
+  "baseline_mean_seconds": 9.85,
+  "candidate_mean_seconds": 8.215,
+  "baseline_olean_bytes": 1145016,
+  "candidate_olean_bytes": 1121824,
+  "baseline_23_heartbeats": 26436,
+  "candidate_23_heartbeats": 20086,
+  "declarations": {
+    "aux1": [
+      49,
+      55
+    ],
+    "aux2": [
+      49,
+      26
+    ],
+    "aux3": [
+      301,
+      419
+    ],
+    "hdual": [
+      1576,
+      953
+    ],
+    "dual": [
+      865,
+      786
+    ],
+    "aux6": [
+      42,
+      36
+    ],
+    "aux7": [
+      49,
+      26
+    ],
+    "aux8": [
+      465,
+      239
+    ],
+    "hform": [
+      5555,
+      798
+    ],
+    "laurent_T_neg_one_mul_T_one": [
+      1205,
+      1165
+    ],
+    "aux11": [
+      501,
+      636
+    ],
+    "aux12": [
+      445,
+      414
+    ],
+    "locS": [
+      248,
+      456
+    ],
+    "hcompl": [
+      198,
+      139
+    ],
+    "loc": [
+      113,
+      194
+    ],
+    "IsLocBasis": [
+      556,
+      240
+    ],
+    "complex_normed_instance_compat": [
+      48,
+      46
+    ],
+    "padic_embedding_algebra_compat": [
+      464,
+      185
+    ],
+    "matLat": [
+      543,
+      391
+    ],
+    "vw": [
+      92,
+      114
+    ],
+    "gramR": [
+      160,
+      94
+    ],
+    "quotGram": [
+      167,
+      266
+    ],
+    "main": [
+      12745,
+      12408
+    ]
+  },
+  "synchronous_counting": "Each named public declaration individually instrumented by #count_heartbeats; both sources received the same five Mathlib imports plus Mathlib.Util.CountHeartbeats and -DElab.async=false. Private helpers and file import costs excluded. Elapsed times above are separate, uninstrumented runs; timings are local observations."
+}

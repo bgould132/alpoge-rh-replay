@@ -1,0 +1,38 @@
+{
+  "candidate": "9084fa67686df0e4bd9fbabb38dfb1c6bec8e34b",
+  "published": "a6ac91a412dcbaab31801355ec5707024a71bf65",
+  "flags": [
+    "-j1",
+    "-DautoImplicit=false",
+    "-DrelaxedAutoImplicit=false",
+    "-DmaxSynthPendingDepth=3",
+    "-Dpp.unicode.fun=true",
+    "-DmaxHeartbeats=4000000",
+    "--tstack=400000"
+  ],
+  "checks": {
+    "baseline": {
+      "path": "PublishedSelector.lean",
+      "source_sha256": "2df4509e290e01ff23bdd86be9d4adc86859573021155031b1ae8bb2536dd9d2",
+      "exit": 0,
+      "seconds": 15.22,
+      "olean_bytes": 1141752
+    },
+    "candidate": {
+      "path": "Development/AutomorphicArithmetic/IntegralCasts/CapelliIdentities/SelectionLemmas.lean",
+      "source_sha256": "a7c72bc94dea49203d583f842fdfb27590d1d775b9550239faf5a1ed63453077",
+      "exit": 0,
+      "seconds": 17.17,
+      "olean_bytes": 1121824
+    },
+    "compatibility": {
+      "path": "AuditAll.lean",
+      "source_sha256": "21254bdf1536a4c5b11d7e24564c45473673a9259f7efda300c4b3bb43d54d24",
+      "exit": 0,
+      "seconds": 6.24,
+      "olean_bytes": 2928
+    }
+  },
+  "rfl_examples": 23,
+  "audit_output": "Matched public binder names, visibility and universes for 23 declarations\n'UpperTheory.Reformulated.B.SelectionLemmas.main' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+}

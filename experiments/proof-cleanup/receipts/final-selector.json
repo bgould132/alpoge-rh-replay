@@ -1,0 +1,20 @@
+{
+  "candidate": "9084fa67686df0e4bd9fbabb38dfb1c6bec8e34b",
+  "original": "a6ac91a412dcbaab31801355ec5707024a71bf65",
+  "checked_sha256": "a7c72bc94dea49203d583f842fdfb27590d1d775b9550239faf5a1ed63453077",
+  "lean": "Lean (version 4.33.1, arm64-apple-darwin24.6.0, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "source_lines": [
+    3547,
+    386
+  ],
+  "source_bytes": [
+    252719,
+    20117
+  ],
+  "exports_with_definitional_equalities": 23,
+  "metadata": "Matched public binder names, visibility and universes for 23 declarations\n'UpperTheory.Reformulated.B.SelectionLemmas.main' depends on axioms: [propext, Classical.choice, Quot.sound]",
+  "verification": "all-declarations.json",
+  "measurements": "controlled-comparison.json",
+  "scope": "Pinned native macOS fragment and module replays. Release-wide Main was not built here."
+}
