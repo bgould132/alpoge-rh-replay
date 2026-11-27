@@ -2,13 +2,13 @@ name: Pinned GRH comparator on Linux
 
 on:
   push:
-    branches: [codex/hosted-grh-comparator-20261127]
+    branches: [codex/hosted-grh-split-retry-20261127]
 
 permissions:
   contents: read
 
 concurrency:
-  group: hosted-grh-comparator-20261127
+  group: hosted-grh-split-retry-20261127
   cancel-in-progress: false
 
 jobs:
@@ -21,21 +21,11 @@ jobs:
       max-parallel: 3
       matrix:
         include:
-          - label: repair-35157
-            commit: c56e11d84b459c9899465ebf93461e0c1f0da0a0
-            tree: 60bf780c77b1a42fc31c52718305bfdb77076ed2
-            sources: 596e261c0e124b059427a72dc49689aa53bd24a5
-            rebuilt: 155
           - label: split-35144-with-repair
             commit: dc79145cb5d40db1291fe81df519c1eb55cbe273
             tree: b8aa78254f001598d05937319302a17f396e7175
             sources: abd393f2890d247cb46298785c003f1ffb902cc5
             rebuilt: 180
-          - label: frobenius-35145-with-repair
-            commit: 8852ece8e5047ae5be6809d6a819104d7bc7c732
-            tree: ea54032e51f67999d945c1fe78754709d37bc7b2
-            sources: 753da5f3a8dc9ac79049c5c59b2730e1aa807042
-            rebuilt: 169
     name: ${{ matrix.label }}
     env:
       BASE: 3fb826c01895b79e56bd9ea6582a9bf8ae8f4033
@@ -185,7 +175,7 @@ jobs:
           fi
           available_mib=$((free_bytes / 1048576))
           swap_mib="$(free -m | awk '/^Swap:/ {print $2}')"
-          extra_mib=$((12288 - swap_mib))
+          extra_mib=$((24576 - swap_mib))
           if (( extra_mib > available_mib - 7168 )); then
             extra_mib=$((available_mib - 7168))
           fi
@@ -197,5 +187,13 @@ jobs:
             sudo swapon "$swapfile"
           fi
           free -h
+          (
+            while sleep 120; do
+              date -u
+              free -m
+            done
+          ) &
+          monitor=$!
+          trap 'kill "$monitor" 2>/dev/null || true' EXIT
           /usr/bin/time -v "$LEAN_SYSROOT/bin/lake" comparator
           echo "Stock comparator accepted $TARGET" >> "$GITHUB_STEP_SUMMARY"
