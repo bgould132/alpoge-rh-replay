@@ -5,8 +5,9 @@ import Lean.Elab.Command
 # Focused kernel check for the determinant quotient pair
 
 From `grh/`, run `lake lean scripts/RecheckQuotientPair.lean` after building the
-readable edition. The check stops at the first kernel error. It rechecks the
-private proofs named for `New.Data.quotientPair` and the public definition.
+readable edition. The check replays the public definition `New.Data.quotientPair`
+and its named private theorems. It reports each rejected declaration or, on
+success, the number of private theorems it checked.
 The ordinary import environment supplies their dependencies. Omitting the
 `module` header is intentional so the kernel can see the imported definitions.
 
@@ -26,6 +27,7 @@ run_cmd liftTermElabM do
   let maxHb := (Core.getMaxHeartbeats (← getOptions)).toUSize
   let depth := defaultMaxRecDepth.toUSize
   let mut checked : Nat := 0
+  let mut rejected : Array MessageData := #[]
   let mut sawModule := false
   for i in [0:env.header.moduleData.size] do
     if env.header.moduleNames[i]! == `New.Determinant.Chain.Moduli then
@@ -34,13 +36,15 @@ run_cmd liftTermElabM do
         unless isPrivateName n && mainDecl.isPrefixOf (privateToUserName n) do continue
         let some (.thmInfo thm) := env.find? n | continue
         let probe := Declaration.thmDecl { thm with name := `RecheckProbe ++ n }
-        match env.addDeclCore maxHb depth probe none with
-        | .ok _ => checked := checked + 1
-        | .error err => throwError "kernel rejected {n}\n{err.toMessageData {}}"
-  unless sawModule && (checked != 0) do
-    throwError "expected private proof declarations for {mainDecl} in the determinant module"
+        checked := checked + 1
+        if let .error err := env.addDeclCore maxHb depth probe none then
+          rejected := rejected.push m!"kernel rejected {n}\n{err.toMessageData {}}"
+  unless sawModule do
+    throwError "missing determinant module for {mainDecl}"
   let newName := `RecheckProbe ++ mainDecl
   let probe := Declaration.defnDecl { parent with name := newName, all := [newName] }
-  match env.addDeclCore maxHb depth probe none with
-  | .ok _ => logInfo m!"kernel accepted {mainDecl} and {checked} associated proof declarations"
-  | .error err => throwError "kernel rejected {mainDecl}\n{err.toMessageData {}}"
+  if let .error err := env.addDeclCore maxHb depth probe none then
+    rejected := rejected.push m!"kernel rejected {mainDecl}\n{err.toMessageData {}}"
+  unless rejected.isEmpty do
+    throwError "{MessageData.joinSep rejected.toList Format.line}"
+  logInfo m!"kernel accepted {mainDecl} and {checked} associated private theorem declarations"
