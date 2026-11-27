@@ -25,7 +25,7 @@ run_cmd liftTermElabM do
     | throwError "missing definition {mainDecl}"
   let maxHb := (Core.getMaxHeartbeats (← getOptions)).toUSize
   let depth := defaultMaxRecDepth.toUSize
-  let mut checked := 0
+  let mut checked : Nat := 0
   let mut sawModule := false
   for i in [0:env.header.moduleData.size] do
     if env.header.moduleNames[i]! == `New.Determinant.Chain.Moduli then
@@ -37,7 +37,7 @@ run_cmd liftTermElabM do
         match env.addDeclCore maxHb depth probe none with
         | .ok _ => checked := checked + 1
         | .error err => throwError "kernel rejected {n}\n{err.toMessageData {}}"
-  unless sawModule && checked > 0 do
+  unless sawModule && (checked != 0) do
     throwError "expected private proof declarations for {mainDecl} in the determinant module"
   let newName := `RecheckProbe ++ mainDecl
   let probe := Declaration.defnDecl { parent with name := newName, all := [newName] }
