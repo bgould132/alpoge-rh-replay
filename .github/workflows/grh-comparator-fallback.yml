@@ -1,0 +1,182 @@
+name: Pinned GRH comparator on Linux
+
+on:
+  push:
+    branches: [codex/hosted-grh-comparator-20261127]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hosted-grh-comparator-20261127
+  cancel-in-progress: false
+
+jobs:
+  comparator:
+    if: github.repository == 'bgould132/alpoge-rh-replay' && github.event.repository.fork && !github.event.repository.private
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - label: repair-35157
+            commit: c56e11d84b459c9899465ebf93461e0c1f0da0a0
+            tree: 60bf780c77b1a42fc31c52718305bfdb77076ed2
+            sources: 596e261c0e124b059427a72dc49689aa53bd24a5
+            rebuilt: 155
+          - label: split-35144-with-repair
+            commit: dc79145cb5d40db1291fe81df519c1eb55cbe273
+            tree: b8aa78254f001598d05937319302a17f396e7175
+            sources: abd393f2890d247cb46298785c003f1ffb902cc5
+            rebuilt: 180
+          - label: frobenius-35145-with-repair
+            commit: 8852ece8e5047ae5be6809d6a819104d7bc7c732
+            tree: ea54032e51f67999d945c1fe78754709d37bc7b2
+            sources: 753da5f3a8dc9ac79049c5c59b2730e1aa807042
+            rebuilt: 169
+    name: ${{ matrix.label }}
+    env:
+      BASE: 3fb826c01895b79e56bd9ea6582a9bf8ae8f4033
+      TARGET: ${{ matrix.commit }}
+      TARGET_TREE: ${{ matrix.tree }}
+      TARGET_SOURCES: ${{ matrix.sources }}
+      EXPECTED_BUILDS: ${{ matrix.rebuilt }}
+      LEAN_NUM_THREADS: '2'
+      MATHLIB_NO_CACHE_ON_UPDATE: '1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Provision the release toolchain and bubblewrap on the ephemeral VM
+        run: |
+          set -euo pipefail
+          sudo rm -rf -- /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL
+          df -h "$RUNNER_TEMP"
+          free_bytes="$(df -B1 --output=avail "$RUNNER_TEMP" | tail -1)"
+          if (( free_bytes < 25000000000 )); then
+            echo "::error::Fewer than 25 GB available after SDK removal for the toolchain, build and 4.75 GB of comparator exports."
+            exit 1
+          fi
+          free -h
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends meson ninja-build libcap-dev pkg-config apparmor zstd
+          curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/leanprover/lean-eval/85a88c37f80170d9f08651dc63ce6b81a8a48cb9/scripts/install_bwrap.sh' -o "$RUNNER_TEMP/install_bwrap.sh"
+          echo "c290df6cebdf1cb26edb69ed4164d9551062bfeb65243b93d1d1d3b77eac0a35  $RUNNER_TEMP/install_bwrap.sh" | sha256sum -c
+          bwrap="$(bash "$RUNNER_TEMP/install_bwrap.sh" "$RUNNER_TEMP/grh-bwrap")"
+          "$bwrap" --unshare-all --ro-bind / / --proc /proc --dev /dev -- /usr/bin/true
+          echo "COMPARATOR_BWRAP=$bwrap" >> "$GITHUB_ENV"
+          curl --fail --location --retry 3 --silent --show-error 'https://github.com/leanprover/lean4/releases/download/v4.37.0-rc1/lean-4.37.0-rc1-linux.tar.zst' -o "$RUNNER_TEMP/lean.tar.zst"
+          echo "2e1bbb832870bb81b7131cb70b13aec2cc7ed9f22e2bdbb236b86076ae20382d  $RUNNER_TEMP/lean.tar.zst" | sha256sum -c
+          tar --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP"
+          rm "$RUNNER_TEMP/lean.tar.zst"
+          sysroot="$RUNNER_TEMP/lean-4.37.0-rc1-linux"
+          echo "$sysroot/bin" >> "$GITHUB_PATH"
+          echo "LEAN_SYSROOT=$sysroot" >> "$GITHUB_ENV"
+          "$sysroot/bin/lean" --version
+          "$sysroot/bin/lake" --version
+
+      - name: Check out the pinned baseline and restore the published cache
+        run: |
+          set -euo pipefail
+          git init -q proof
+          cd proof
+          git remote add origin https://github.com/bgould132/alpoge-rh-replay.git
+          git sparse-checkout init --cone
+          git sparse-checkout set grh
+          git -c protocol.version=2 fetch -q --no-tags --depth=1 --filter=blob:none origin "$BASE" "$TARGET"
+          git checkout -q --detach "$BASE"
+          test "$(git rev-parse HEAD:grh/src)" = ef818ec27d317f153d00e18f168a7440ada9d28b
+          cd grh
+          python3 - <<'PY'
+          import json, pathlib, subprocess
+          for dep in json.loads(pathlib.Path('lake-manifest.json').read_text())['packages']:
+              path = pathlib.Path('.lake/packages') / dep['name']
+              subprocess.run(['git', 'init', '-q', str(path)], check=True)
+              def git(*args):
+                  return subprocess.check_output(['git', '-C', str(path), *args], text=True).strip()
+              git('remote', 'add', 'origin', dep['url'])
+              git('fetch', '-q', '--no-tags', '--depth=1', 'origin', dep['rev'])
+              git('checkout', '-q', '--detach', 'FETCH_HEAD')
+              assert git('rev-parse', 'HEAD') == dep['rev']
+          PY
+          python3 scripts/ci-cache-get.py --print-identity | tee "$RUNNER_TEMP/baseline-identity.json"
+          grep -Fq 265c7207fe58fcaa43d4e9a8e01b68b3f2fcd258b9ac309d32642d51b7f0e0e6 "$RUNNER_TEMP/baseline-identity.json"
+          "$LEAN_SYSROOT/bin/lake" exe cache get
+          df -h .
+
+      - name: Build changed source modules and check all five axiom lists
+        working-directory: proof/grh
+        run: |
+          set -euo pipefail
+          git checkout -q --detach "$TARGET"
+          test "$(git rev-parse HEAD)" = "$TARGET"
+          test "$(git rev-parse HEAD^{tree})" = "$TARGET_TREE"
+          test "$(git rev-parse HEAD:./src)" = "$TARGET_SOURCES"
+          git diff --exit-code "$BASE" "$TARGET" -- Challenge.lean comparator.json lakefile.toml lake-manifest.json lean-toolchain
+          python3 - "$BASE" "$TARGET" "$EXPECTED_BUILDS" "$RUNNER_TEMP/rebuild.txt" <<'PY'
+          import pathlib, re, subprocess, sys
+          base, target, count, output = sys.argv[1:]
+          paths = subprocess.check_output(['git', '-C', '..', 'diff', '--no-renames', '--name-only', base, target], text=True).splitlines()
+          assert all(p.startswith('grh/src/') and p.endswith('.lean') for p in paths)
+          src = pathlib.Path('src')
+          def module(relpath):
+              return '.'.join(relpath.with_suffix('').parts)
+          affected = {module(pathlib.Path(p).relative_to('grh/src')) for p in paths}
+          imports = re.compile(r'^\s*(?:(?:public|private|meta|protected)\s+)*import\s+(?:all\s+)?(\w+(?:\.\w+)*)', re.M)
+          deps = {module(p.relative_to(src)): set(imports.findall(p.read_text())) for p in src.rglob('*.lean')}
+          while True:
+              added = {n for n, inputs in deps.items() if n not in affected and inputs & affected}
+              if not added:
+                  break
+              affected.update(added)
+          assert len(affected) == int(count), (len(affected), count)
+          for name in affected:
+              stem = pathlib.Path('.lake/build/lib/lean', *name.split('.'))
+              stem.with_suffix('.olean').unlink(missing_ok=True)
+              stem.with_suffix('.trace').unlink(missing_ok=True)
+          pathlib.Path(output).write_text('\n'.join(sorted(affected)))
+          PY
+          "$LEAN_SYSROOT/bin/lake" --no-cache build 2>&1 | tee "$RUNNER_TEMP/project-build.log"
+          python3 - "$RUNNER_TEMP/project-build.log" "$RUNNER_TEMP/rebuild.txt" <<'PY'
+          import pathlib, re, sys
+          log = pathlib.Path(sys.argv[1]).read_text()
+          built = set(re.findall(r'\bBuilt ((?:New\.|Lib\.)[\w.]+|Main|Statements)(?=\s|$)', log))
+          print('Source modules rebuilt:', len(built), flush=True)
+          expected = set(pathlib.Path(sys.argv[2]).read_text().splitlines())
+          assert expected <= built, sorted(expected - built)
+          PY
+          "$LEAN_SYSROOT/bin/lake" --no-cache --no-build build
+          "$LEAN_SYSROOT/bin/lake" env lean scripts/PrintAxioms.lean | tee "$RUNNER_TEMP/axioms.log"
+          python3 - "$RUNNER_TEMP/axioms.log" <<'PY'
+          import json, pathlib, re, sys
+          expected = set(json.loads(pathlib.Path('comparator.json').read_text())['theorem_names'])
+          found = {}
+          for name, values in re.findall(r"'([^']+)' depends on axioms:\s*\[([^\]]*)\]", pathlib.Path(sys.argv[1]).read_text()):
+              assert name not in found
+              found[name] = {s.strip() for s in values.split(',')}
+          assert len(expected) == 5 and found.keys() == expected
+          assert all(v == {'propext', 'Quot.sound', 'Classical.choice'} for v in found.values())
+          PY
+          git diff --quiet HEAD --
+          git diff --cached --quiet HEAD --
+
+      - name: Run the unmodified Lake comparator
+        working-directory: proof/grh
+        run: |
+          set -euo pipefail
+          export PATH="$LEAN_SYSROOT/bin:/usr/local/bin:/usr/bin:/bin"
+          test "$(lean --print-prefix)" = "$LEAN_SYSROOT"
+          test "$(command -v lake)" = "$LEAN_SYSROOT/bin/lake"
+          sha256sum "$LEAN_SYSROOT/bin/"{lean,lake,leanexport,leanchecker,nanoda_bin} "$COMPARATOR_BWRAP"
+          cat comparator.json
+          df -h . "$RUNNER_TEMP"
+          free -h
+          free_bytes="$(df -B1 --output=avail . | tail -1)"
+          if (( free_bytes < 5000000000 )); then
+            echo "::error::Less than 5 GB remains for stock comparator temporary files."
+            exit 1
+          fi
+          /usr/bin/time -v "$LEAN_SYSROOT/bin/lake" comparator
+          echo "Stock comparator accepted $TARGET" >> "$GITHUB_STEP_SUMMARY"
