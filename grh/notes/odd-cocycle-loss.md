@@ -1,0 +1,5 @@
+# How one integer bounds the odd cocycle losses
+
+For a fixed CM field inside a cyclotomic field and a fixed twist cutoff, `New.exists_length_shaOdd_le` chooses a positive integer before it quantifies over the prime, coefficient ring, twist and level. In particular, for a nonzero twist the construction bounds a module of actual cocycles satisfying local conditions. Its length can be positive at primes dividing the chosen integer. [The uniform length bound](../src/Lib/Cyclotomic/OddSha.lean#L610-L630)
+
+The order of these quantifiers matters when the congruence argument adds losses over a finite set of primes. If the common integer is $X$, prime factorization gives $\sum_{\ell\in T} v_\ell(X)\log\ell\leq\log X$. The proof bounds this one logarithm using the cyclotomic conductor and the class number, then uses the resulting estimate in the denominator calculation. [The weighted sum](../src/New/Congruences/FitTwistsExist.lean#L157-L176) · [The denominator estimate](../src/New/Congruences/FitTwistsExist.lean#L192-L213)
