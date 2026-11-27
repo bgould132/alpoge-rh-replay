@@ -44,6 +44,7 @@ jobs:
       TARGET_SOURCES: ${{ matrix.sources }}
       EXPECTED_BUILDS: ${{ matrix.rebuilt }}
       LEAN_NUM_THREADS: '2'
+      LEAN_ABORT_ON_PANIC: '1'
       MATHLIB_NO_CACHE_ON_UPDATE: '1'
     defaults:
       run:
@@ -61,7 +62,7 @@ jobs:
           fi
           free -h
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends meson ninja-build libcap-dev pkg-config apparmor zstd
+          sudo apt-get install -y --no-install-recommends meson ninja-build libcap-dev pkg-config apparmor zstd elan
           curl --fail --location --retry 3 --silent --show-error 'https://raw.githubusercontent.com/leanprover/lean-eval/85a88c37f80170d9f08651dc63ce6b81a8a48cb9/scripts/install_bwrap.sh' -o "$RUNNER_TEMP/install_bwrap.sh"
           echo "c290df6cebdf1cb26edb69ed4164d9551062bfeb65243b93d1d1d3b77eac0a35  $RUNNER_TEMP/install_bwrap.sh" | sha256sum -c
           bwrap="$(bash "$RUNNER_TEMP/install_bwrap.sh" "$RUNNER_TEMP/grh-bwrap")"
@@ -72,6 +73,10 @@ jobs:
           tar --zstd -xf "$RUNNER_TEMP/lean.tar.zst" -C "$RUNNER_TEMP"
           rm "$RUNNER_TEMP/lean.tar.zst"
           sysroot="$RUNNER_TEMP/lean-4.37.0-rc1-linux"
+          mkdir -p "$HOME/.elan/toolchains"
+          ln -s "$sysroot" "$HOME/.elan/toolchains/leanprover--lean4---v4.37.0-rc1"
+          elan_lean="$(ELAN_TOOLCHAIN=leanprover/lean4:v4.37.0-rc1 elan which lean)"
+          test "$(realpath "$elan_lean")" = "$(realpath "$sysroot/bin/lean")"
           echo "$sysroot/bin" >> "$GITHUB_PATH"
           echo "LEAN_SYSROOT=$sysroot" >> "$GITHUB_ENV"
           "$sysroot/bin/lean" --version
@@ -114,7 +119,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$TARGET"
           test "$(git rev-parse HEAD^{tree})" = "$TARGET_TREE"
           test "$(git rev-parse HEAD:./src)" = "$TARGET_SOURCES"
-          git diff --exit-code "$BASE" "$TARGET" -- Challenge.lean comparator.json lakefile.toml lake-manifest.json lean-toolchain
+          git diff --exit-code "$BASE" "$TARGET" -- Challenge.lean src/Statements.lean comparator.json lakefile.toml lake-manifest.json lean-toolchain
           python3 - "$BASE" "$TARGET" "$EXPECTED_BUILDS" "$RUNNER_TEMP/rebuild.txt" <<'PY'
           import pathlib, re, subprocess, sys
           base, target, count, output = sys.argv[1:]
@@ -178,5 +183,19 @@ jobs:
             echo "::error::Less than 5 GB remains for stock comparator temporary files."
             exit 1
           fi
+          available_mib=$((free_bytes / 1048576))
+          swap_mib="$(free -m | awk '/^Swap:/ {print $2}')"
+          extra_mib=$((12288 - swap_mib))
+          if (( extra_mib > available_mib - 7168 )); then
+            extra_mib=$((available_mib - 7168))
+          fi
+          if (( extra_mib >= 1024 )); then
+            swapfile="$RUNNER_TEMP/grh-comparator.swap"
+            sudo fallocate -l "${extra_mib}M" "$swapfile"
+            sudo chmod 600 "$swapfile"
+            sudo mkswap "$swapfile"
+            sudo swapon "$swapfile"
+          fi
+          free -h
           /usr/bin/time -v "$LEAN_SYSROOT/bin/lake" comparator
           echo "Stock comparator accepted $TARGET" >> "$GITHUB_STEP_SUMMARY"
